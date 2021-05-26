@@ -45,11 +45,16 @@ public class EnemyController : MonoBehaviour
         {
             this.MoveGoomba();
         }
-        else
+        else if (this.enemyBody.position.x - this.originalX > this.maxOffset)
         {
-            this.moveRight *= -1;
+            this.moveRight = -1;
             this.ComputeVelocity();
-            this.MoveGoomba();
         }
+        else if (this.originalX - this.enemyBody.position.x > this.maxOffset)
+        {
+            this.moveRight = 1;
+            this.ComputeVelocity();
+        }
+        this.MoveGoomba();
     }
 }
