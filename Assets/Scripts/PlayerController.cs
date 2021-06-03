@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
+    private Animator marioAnimator;
+    private AudioSource jumpAudio;
 
     private bool onGroundState = true;
     private bool faceRightState = true;
@@ -27,6 +29,8 @@ public class PlayerController : MonoBehaviour
         Application.targetFrameRate = 30;
         this.marioBody = GetComponent<Rigidbody2D>();
         this.marioSprite = GetComponent<SpriteRenderer>();
+        this.marioAnimator = GetComponent<Animator>();
+        this.jumpAudio = GetComponent<AudioSource>();
         this.originalX = this.transform.position.x;
     }
 
@@ -41,6 +45,8 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        float moveVertical = Input.GetAxisRaw("Vertical");
+
         if (Mathf.Abs(moveHorizontal) > 0)
         {
             if (this.marioBody.velocity.magnitude < maxSpeed)
@@ -50,12 +56,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyUp("a") || Input.GetKeyUp("d"))
+        if (Mathf.Abs(moveHorizontal) < 0.1)
         {
             this.marioBody.velocity = new Vector2(0.0f, this.marioBody.velocity.y);
         }
 
-        if (Input.GetKeyDown("w") && this.onGroundState)
+        if (Input.GetButtonDown("Jump") && this.onGroundState)
         {
             this.marioBody.AddForce(Vector2.up * this.upSpeed, ForceMode2D.Impulse);
             this.onGroundState = false;
@@ -65,16 +71,21 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("a") && this.faceRightState)
+        float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        float moveVertical = Input.GetAxisRaw("Vertical");
+
+        if (moveHorizontal < 0 && this.faceRightState)
         {
             this.faceRightState = false;
             this.marioSprite.flipX = true;
+            if (marioBody.velocity.x > 0.01) this.marioAnimator.SetTrigger("onSkid");
         }
 
-        if (Input.GetKeyDown("d") && !this.faceRightState)
+        if (moveHorizontal > 0 && !this.faceRightState)
         {
             this.faceRightState = true;
             this.marioSprite.flipX = false;
+            if (marioBody.velocity.x < -0.01) this.marioAnimator.SetTrigger("onSkid");
         }
 
         if (!this.onGroundState && this.countScoreState)
@@ -85,11 +96,14 @@ public class PlayerController : MonoBehaviour
                 this.score++;
             }
         }
+
+        this.marioAnimator.SetFloat("xSpeed", Mathf.Abs(marioBody.velocity.x));
+        this.marioAnimator.SetBool("onGround", onGroundState);
     }
 
     void OnCollisionEnter2D(Collision2D collision2D)
     {
-        if (collision2D.gameObject.CompareTag("Ground")) 
+        if (collision2D.gameObject.CompareTag("Ground") || collision2D.gameObject.CompareTag("Obstacle"))
         {
             this.onGroundState = true;
             this.countScoreState = false;
@@ -103,5 +117,10 @@ public class PlayerController : MonoBehaviour
         {
             this.startMenu.GetComponent<MenuController>().ResetMenu();
         }
+    }
+
+    void PlayJumpSound()
+    {
+        this.jumpAudio.PlayOneShot(this.jumpAudio.clip);
     }
 }

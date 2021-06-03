@@ -6,15 +6,16 @@ TagManager:
   tags:
   - Ground
   - Enemy
+  - Obstacle
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Obstacles
   - Water
   - UI
-  - 
-  - 
+  - QuestionBox
+  - Spawned
   - 
   - 
   - 
@@ -42,6 +43,15 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1465164011
+    locked: 0
+  - name: Decorations
+    uniqueID: 3641969043
+    locked: 0
+  - name: Foreground
+    uniqueID: 3516756827
     locked: 0
   - name: Goomba
     uniqueID: 1216129869
