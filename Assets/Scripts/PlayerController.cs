@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public Transform enemyLocation;
     public Text scoreText;
     public GameObject startMenu;
+    public ParticleSystem dustCloud;
 
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
@@ -108,6 +109,8 @@ public class PlayerController : MonoBehaviour
             this.onGroundState = true;
             this.countScoreState = false;
             this.scoreText.text = $"SCORE: {this.score.ToString().PadLeft(4, '0')}";
+
+            this.dustCloud.Play();
         }
     }
 
