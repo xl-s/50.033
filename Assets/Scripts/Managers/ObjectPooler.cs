@@ -58,6 +58,14 @@ public class ObjectPooler : MonoBehaviour
         return pickup;
     }
 
+    public void DeactivateAllObjects()
+    {
+        for (int i = 0; i < pooledObjects.Count; i++)
+        {
+            pooledObjects[i].gameObject.SetActive(false);
+        }
+    }
+
     public GameObject GetPooledObject(ObjectType type)
     {
         for (int i = 0; i < pooledObjects.Count; i++)

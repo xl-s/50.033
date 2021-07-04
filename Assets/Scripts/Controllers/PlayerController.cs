@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singleton<PlayerController>
 {
     public float speed;
-    public float upSpeed;
-    public float maxSpeed = 10;
+    public int defaultUpSpeed = 13;
+    public int defaultMaxSpeed = 10;
 
-    public GameObject startMenu;
+    public IntVariable marioJumpSpeed;
+    public IntVariable marioMaxSpeed;
+
     public ParticleSystem dustCloud;
     public AudioSource jumpAudio;
     public AudioSource dieAudio;
     public AudioSource bgmAudio;
+    public GameConstants gameConstants;
+
+    public CustomCastEvent onCast;
 
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
@@ -33,6 +38,9 @@ public class PlayerController : MonoBehaviour
         this.marioAnimator = GetComponent<Animator>();
         this.originalX = this.transform.position.x;
         GameManager.OnPlayerDeath += Deaded;
+
+        marioJumpSpeed.SetValue(defaultUpSpeed);
+        marioMaxSpeed.SetValue(defaultMaxSpeed);
     }
 
     public void Reset()
@@ -55,7 +63,7 @@ public class PlayerController : MonoBehaviour
 
             if (Mathf.Abs(moveHorizontal) > 0)
             {
-                if (this.marioBody.velocity.magnitude < maxSpeed)
+                if (this.marioBody.velocity.magnitude < marioMaxSpeed.Value)
                 {
                     Vector2 movement = new Vector2(moveHorizontal, 0.0f);
                     this.marioBody.AddForce(movement * this.speed);
@@ -69,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetButtonDown("Jump") && this.onGroundState)
             {
-                this.marioBody.AddForce(Vector2.up * this.upSpeed, ForceMode2D.Impulse);
+                this.marioBody.AddForce(Vector2.up * marioJumpSpeed.Value, ForceMode2D.Impulse);
                 this.onGroundState = false;
             }
         }
@@ -100,11 +108,11 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown("z"))
         {
-            CentralManager.Instance.consumePowerup(KeyCode.Z, this.gameObject);
+            onCast.Invoke(KeyCode.Z);
         }
         if (Input.GetKeyDown("x"))
         {
-            CentralManager.Instance.consumePowerup(KeyCode.X, this.gameObject);
+            onCast.Invoke(KeyCode.X);
         }
     }
 
@@ -144,5 +152,10 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         Destroy(gameObject);
+    }
+
+    public void moveScene(string sceneName)
+    {
+        marioBody.position = gameConstants.levelStartPoint[sceneName];
     }
 }

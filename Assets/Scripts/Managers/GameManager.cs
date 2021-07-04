@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
     public Text score;
     public int playerScore = 0;
@@ -17,8 +17,15 @@ public class GameManager : MonoBehaviour
         this.score.text = $"SCORE: {this.playerScore.ToString().PadLeft(4, '0')}";
     }
 
+    public void resetScore()
+    {
+        this.playerScore = 0;
+        this.score.text = $"SCORE: {this.playerScore.ToString().PadLeft(4, '0')}";
+    }
+
     public void damagePlayer()
     {
         OnPlayerDeath();
+        resetScore();
     }
 }

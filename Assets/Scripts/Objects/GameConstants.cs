@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameConstants : ScriptableObject
 {
     public float groundSurface = -1.0f;
-    
+
     public int breakBrickNumDebris = 5;
 
     public int breakTimeStep = 30;
@@ -18,4 +18,8 @@ public class GameConstants : ScriptableObject
 
     public float enemyMaxOffset = 5.0f;
     public float enemyPatrolTime = 2.0f;
+
+    public Dictionary<string, Vector2> levelStartPoint = new Dictionary<string, Vector2>{
+        ["MarioScene2"] = new Vector2(-18.0f, 5.5f)
+    };
 }

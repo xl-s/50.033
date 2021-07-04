@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform playerTransform;
     public Transform startLimit;
     public Transform endLimit;
 
+    private Transform playerTransform;
     private float halfWidth;
     private float y;
     private float z;
@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         Camera cam = GetComponent<Camera>();
+        playerTransform = PlayerController.instance.gameObject.transform;
         this.halfWidth = cam.orthographicSize * cam.aspect;
         this.y = this.transform.position.y;
         this.z = this.transform.position.z;

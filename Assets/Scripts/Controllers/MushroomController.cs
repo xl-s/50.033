@@ -13,12 +13,10 @@ public class MushroomController : MonoBehaviour
 
     private Vector2 velocity;
     private Rigidbody2D rigidBody;
-    private ConsumableInterface consumeController;
 
     void Start()
     {
         this.rigidBody = GetComponent<Rigidbody2D>();
-        this.consumeController = GetComponent<ConsumableInterface>();
         this.moveRight = 2 * Random.Range(0, 2) - 1;
         this.rigidBody.AddForce(new Vector2(this.moveRight * this.moveSpeed, this.popImpulse), ForceMode2D.Impulse);
     }
@@ -28,10 +26,7 @@ public class MushroomController : MonoBehaviour
         if (this.collected) return;
         if (col.gameObject.CompareTag("Player"))
         {
-            this.rigidBody.velocity = new Vector2(0, this.rigidBody.velocity.y);
-            this.rigidBody.drag = 10.0f;
             this.bumpAudio.PlayOneShot(this.bumpAudio.clip);
-            consumeController.Collect();
             GetComponent<Collider2D>().enabled = false;
             GetComponent<SpriteRenderer>().enabled = false;
             this.collected = true;

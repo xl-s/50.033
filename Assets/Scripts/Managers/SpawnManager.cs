@@ -25,4 +25,9 @@ public class SpawnManager : MonoBehaviour
             Debug.Log("not enough items in the pool,");
         }
     }
+
+    public void resetAll()
+    {
+        ObjectPooler.SharedInstance.DeactivateAllObjects();
+    }
 }
